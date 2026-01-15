@@ -1,0 +1,53 @@
+C 测试代码
+^PO, 一定要明确目标, 把测试的目的写明确
+然后C代码要规范, 要熵减到极值, 避免不确定序, 避免标准未定义行为, 避免不产生side effect的冗余变量
+
+Make sure what we should train for professionalism.
+Read the AnnexJ content in C99 standard document.
+
+Three behaviour need to pay attention:
+Unspecific behaviour  规范的C带来确定性
+Implementation behaviour  ABI带来确定性
+Undefined behaviour   避免
+
+总的来说, 我在编写C代码的时候, 要避免unspecific behavior, undefined behavior, 
+还要把涉及到测试目的的implementation-defined behavior 的具体取值找出来
+
+要做什么:
+明确哪些更规范的写法会使得代码的确定性提升, 养成这样写的习惯.
+明确C语言中的unspecific behaviour, 明确哪些写法会带来歧义导致 序列点 不明确, 检查代码是否冗余.
+undefined behaviour (e.g. buffer leak, use dangle pointer) should be strictly avioded.
+
+做到C代码写好之后, 能够明确对应出二进制状态机码 (通过分析 序列点 和 side effect chain)
+就是测试用C的语义要明确, 不能够靠编译器来加以解释
+
+todo:
+将0$和Esc健位重新定义
+
+不同编译期的标准头文件<stdio.h>等是不一样的，库文件的具体内容不是标准制定的，而是implementation的一部分
+
+对于包含实现定义行为的程序, 在特定环境中多次编译运行, 可以得到相同的结果. 
+但如果要将程序移植到另一个环境, 就需要考虑实现定义行为在新环境中的表现与旧环境的差异.
+
+bibiography:
+definition of runtime env:
+This environment may address a number of issues including the management of application memory, 
+how the program accesses variables, mechanisms for passing parameters between procedures,
+interfacing with the operating system (OS), among others.
+The compiler makes assumptions depending on the specific runtime system to generate correct code.
+Typically the runtime system will have some responsibility for setting up and managing the stack and heap,
+and may include features such as garbage collection, 
+threads or other dynamic features built into the language.[1]
+
+注意，逻辑运行的测试代码不需要runtime, runtime是依赖os的.
+
+runtime主要的作用点：
+链接器(ld)工作：
+├── 静态链接：将 crt0.o + libc.a 拷贝到.out
+│   └── crt0.o：C运行时启动代码(_start → main)
+│   └── libc.a：printf/malloc等实现
+│
+├── 动态链接：.out中记录 .dynamic 段
+│   └── 运行时：ld.so动态加载 libc.so
+│
+└── 生成最终.out：包含runtime库代码/引用
