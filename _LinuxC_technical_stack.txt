@@ -1,0 +1,46 @@
+LinuxC  Technical Stack
+
+GCC
+GDB
+Makefile
+
+
+gcc 生成 .out  binary executable file
+gcc -ggdb -.. test.c -o test.out
+执行.out 文件
+若报错：
+1. 程序执行中 → CPU 算术错误 → 发出 SIGFPE 信号
+2. 内核收到信号 → 检查 kernel.core_pattern   core_pattern 决定了core怎么生成，放在那里等
+3. kernel 暂停程序 → 遍历进程所有内存页
+4. 写入 ELF core 文件 → 程序正式退出
+5. 终端显示 "(core dumped)"
+
+Core 文件结构：
+┌─────────────────┐
+│ ELF 头部        │ ← 文件格式 + 段信息
+├─────────────────┤
+│ 程序头部表      │ ← 描述各内存段位置
+├─────────────────┤
+│ .text 段        │ ← 代码（只读）
+├─────────────────┤
+│ .data/.bss 段   │ ← 全局变量
+├─────────────────┤
+│ 堆（heap）      │ ← malloc 分配
+├─────────────────┤
+│ 栈（stack）     │ ← 局部变量 + 调用栈
+├─────────────────┤
+│ 共享库         │ ← printf 等库函数
+└─────────────────┘
+
+->read core file by GDB, find the bug:
+gdb ./test.out core ./core.....
+
+common used command in (gdb) mode: f 1  f 2.... list(list the code context of the crash line) p ...(print)
+
+
+linuxC编译：
+gcc  clang  预编译 编译
+编译过程包括： 词法分析 语法分析  语义分析
+语义分析好工具： lint
+
+
