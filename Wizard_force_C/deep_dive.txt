@@ -1,0 +1,4 @@
+->C function get the parameter input
+->How does the C program store the variables that we defined
+  and how about the addr series
+:
