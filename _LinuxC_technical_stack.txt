@@ -1,4 +1,26 @@
 LinuxC  Technical Stack
+->The file of program normally includes:
+Makefile  .c  binary code
+
+->When coding:
+use assert()
+avoid unspecific behavior
+make sure some critical implementation-defined behavior
+
+%(EMU) add dump_print after each state update.
+
+->Verification:
+1.LINT-Static Semantic check  (clang xxx.c --analyze -Xanalyzer -analyzer-output=text)
+2.Run sucessfully
+3.key GDB-Debug (use debug-gcc -> start gdb -> list -> breakpoint-> run ->display-> step/continue)
+    or rr(Reverse-Debug)
+4.valgrind
+
+->Makfile Experience:
+1.different gcc compiling requirement : 
+    e.g. debug: gcc -g -o0 xx.c -o xx
+         run  : gcc -o2 xx.c -o xx
+
 
 GCC
 GDB
