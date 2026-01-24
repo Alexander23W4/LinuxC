@@ -1,0 +1,10 @@
+fetch  decode  execute  update
+
+-> complete the logical part
+
+-> write down the code into the memory
+
+-> config runtime environment
+    parameter update    
+    library functions
+    program exit
