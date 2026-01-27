@@ -8,7 +8,7 @@
 #define OPERATING_CIRCLE_TERMINATION__SUM 6000
 #define GPR_AMOUNT 32
 #define GENERAL_BIT_WIDTH 32
-#define MEMORY_AMOUNT 2048   // 4KB
+#define MEMORY_AMOUNT 131072  // 128KB
 #define MEMORY_LOAD_EFFECTIVENESS 2000
 
 /*
@@ -24,52 +24,66 @@ imm[11:5] rs2 rs1 010 imm[4:0] 0100011 SW
 imm[11:5] rs2 rs1 000 imm[4:0] 0100011 SB
 
 */
-int operate(void);
-void output_elements(int circle);
-void load_memory(char* filename);
+int operate(int32_t* M);
+void output_elements(int circle, int next, int32_t* M);
+void load_memory(char* filename, int32_t* M);
 
 uint32_t pc = 0;
-uint32_t GPR[GPR_AMOUNT] = {0};
-uint32_t M[MEMORY_AMOUNT] = {0};
+int32_t GPR[GPR_AMOUNT] = {0};
+// int32_t M[MEMORY_AMOUNT] = {0};
 
 int _operating_circles = 0;
 
 int main(int argc, char** argv){
     // load the codes into memory
+    int32_t* M = (int32_t*)malloc(MEMORY_AMOUNT);
     assert(argc >= 2);
-    load_memory(argv[1]);
+    load_memory(argv[1], M);
 
     // operate until the very end
     while(_operating_circles <= OPERATING_CIRCLE_TERMINATION__MEM){
-        int next = operate();
+        int next = operate(M);
         assert(next != -1);
         pc = next;
-        output_elements(_operating_circles);         // print all variants (GPRs) for each loop
+        output_elements(_operating_circles, next, M);         // print all variants (GPRs) for each loop
         _operating_circles++;
     }
+    free(M);
 }
-void load_memory(char* filename){   
+void load_memory(char* filename, int32_t* M){   
     FILE *fp = fopen(filename, "rb");  
     assert(fp);
 // get instr amount
-    fseek(fp, 0, SEEK_END);
-    long total_bytes = ftell(fp);
-    fseek(fp, 0, SEEK_SET);  
+    // fseek(fp, 0, SEEK_END);
+    // long total_bytes = ftell(fp);
+    // fseek(fp, 0, SEEK_SET);    
     size_t loaded_instr = fread(M, sizeof(uint32_t), MEMORY_LOAD_EFFECTIVENESS, fp);
     fclose(fp);
 
     printf("--LOAD %zu AMOUNTS OF INSTR TO M[]\n", loaded_instr);
 }
 
-void output_elements(int circle){     // &&&
+void print_binary_int32(int32_t num) {
+    for (int i = 31; i >= 0; i--) {
+        printf("%d", (num >> i) & 1);
+        if (i % 8 == 0) printf(" ");  
+    }
+    printf("\n");
+}
+
+
+void output_elements(int circle, int next, int32_t* M){     // &&&
     printf("---%d---", circle);
     for(int i = 0; i < GPR_AMOUNT; i++){
         printf("GPR %d: %d\n", i, GPR[i]);
     }
+    printf("NEXT: %d\n", next);
+    printf("NEXT INSTR: ");
+    print_binary_int32(M[next >> 2]);
     printf("\n\n");
 }
 
-int32_t sign_extend_s_type(uint32_t code) {   // &&&
+int32_t imm_conbination__s_type(uint32_t code) {   
     int imm11_5 = (code >> 25) & 0x7F;    // bit[31:25]
     int imm4_0 = (code >> 7) & 0x1F;      // bit[11:7]      
     
@@ -77,34 +91,36 @@ int32_t sign_extend_s_type(uint32_t code) {   // &&&
 }
 
 
-int32_t sign_extend(uint32_t instr, int bit_width) {    // &&&
+int32_t sign_extend(int num, int bit_width) {    // &&&  
 
-    uint32_t field = (instr >> (32 - bit_width)) & ((1 << bit_width) - 1);
-    
-    if (field & (1 << (bit_width - 1))) {
-        return field | (~0U << bit_width);
-    } else {
-        return field;
+    int32_t result;
+    int signed_bit = (num >> (bit_width - 1)) & 1;
+    if(signed_bit == 0){
+        result = num | 0x00000000;
     }
+    else{
+        result = ((0xFFFFFFFF >> bit_width) << bit_width) | num;
+    }
+    return result;
 }
 
-int operate(void){
+int operate(int32_t* M){
     int code = M[pc >> 2];    // fetch
     // decode operate update
     int opcode = code & 0x7F;
     int opcode__a = (code & 0x7000) >> 12;
     int next = 0;
     int32_t imm;
-    int32_t rs1;
-    int32_t rd;
-    int32_t rs2;
+    int rs1;
+    int rs2;
+    int rd;
     switch(opcode){
         case 0b1100111:   // jalr   jump and link 
             imm = sign_extend(code >> 20, 12);
             rs1 = (code >> 15) & 0x1F;
             rd = (code >> 7) & 0x1F;
-            if(rd != 0) GPR[rd] = pc + 4;
             next = (imm + GPR[rs1]) & ~1;    // ~1 is reversed code of 1(0000....0001)
+            if(rd != 0) GPR[rd] = pc + 4;
             break;
 
         case 0b0010011:   // addi    // add immediate
@@ -124,19 +140,19 @@ int operate(void){
             break;
 
         case 0b0110111:   // lui (load upper immediate)
-            imm = (code >> 12) << 12;
+            imm = (code >> 12) << 12;   // filling the lowest 12 bits with 0
             rd = (code >> 7) & 0x1F;
             GPR[rd] = imm;
             next = pc +4;
             break;
 
-        case 0b0000011:   // lw | lbu     // pull data from RAM to GPR
+        case 0b0000011:   // lw | lbu     // load data RAM -> GPR
             assert(opcode__a == 0b010 || opcode__a == 0b100);
             rs1 = (code >> 15) & 0x1F;
             rd = (code >> 7) & 0x1F;
             imm = sign_extend(code >> 20, 12);
             if(opcode__a == 0b010){ // lw
-                GPR[rd] = M[(GPR[rs1] + imm) >> 2];
+                GPR[rd] = M[(GPR[rs1] + imm) >> 2];   // draw data from memory, Byte addr >> 2
             }
             else{    // lbu
                 uint32_t addr = GPR[rs1] + imm;
@@ -147,19 +163,20 @@ int operate(void){
                 uint8_t byte_val;
                 
                 byte_val = (word >> (byte_offset * 8)) & 0xFF;
-                GPR[rd] = byte_val; 
+                GPR[rd] = byte_val | 0x00000000; 
             }
             next = pc + 4;
             break;
 
-        case 0b0100011:   // sw | sb
+        case 0b0100011:   // sw | sb      // store data GPR -> RAM
             assert(opcode__a == 0b010 || opcode__a == 0b000);
             int funct3 = (code >> 12) & 0x7;
             rs1 = (code >> 15) & 0x1F;
             rs2 = (code >> 20) & 0x1F;  
-            int32_t imm = sign_extend_s_type(code);  
+            int32_t imm = imm_conbination__s_type(code);  
+            int32_t expanded_imm = sign_extend(imm, 12);
             
-            uint32_t addr = GPR[rs1] + imm;
+            uint32_t addr = GPR[rs1] + expanded_imm;   // dest addr
             uint32_t word_idx = addr >> 2;
             int byte_off = addr & 3;
             
