@@ -8,7 +8,7 @@
 #define OPERATING_CIRCLE_TERMINATION__SUM 6000
 #define GPR_AMOUNT 32
 #define GENERAL_BIT_WIDTH 32
-#define MEMORY_AMOUNT 131072  // 128KB
+#define MEMORY_AMOUNT 524288  // 2MB
 #define MEMORY_LOAD_EFFECTIVENESS 2000
 
 /*
@@ -37,6 +37,14 @@ int _operating_circles = 0;
 int main(int argc, char** argv){
     // load the codes into memory
     int32_t* M = (int32_t*)malloc(MEMORY_AMOUNT);
+    if (M == NULL) {
+        perror("malloc failed");
+        exit(1);
+    }
+    printf("DISTRIBUTED %zu BYTES (%.1f KB)\n", 
+       MEMORY_AMOUNT * sizeof(int32_t), 
+       MEMORY_AMOUNT * sizeof(int32_t) / 1024.0);
+
     assert(argc >= 2);
     load_memory(argv[1], M);
 
@@ -178,6 +186,7 @@ int operate(int32_t* M){
             
             uint32_t addr = GPR[rs1] + expanded_imm;   // dest addr
             uint32_t word_idx = addr >> 2;
+            printf("__SWSB_STORE_ADDR: %d\n", word_idx);
             int byte_off = addr & 3;
             
             if (funct3 == 0b010) {  // SW
