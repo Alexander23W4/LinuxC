@@ -23,16 +23,20 @@ imm[11:0] rs1 100 rd 0000011 LBU
 imm[11:5] rs2 rs1 010 imm[4:0] 0100011 SW
 imm[11:5] rs2 rs1 000 imm[4:0] 0100011 SB
 
+000000000001 00000 000 00000 1110011 (0x00100073) EBREAK  
+0x00000513   HALT
 */
 int operate(int32_t* M);
 void output_elements(int circle, int next, int32_t* M);
 void load_memory(char* filename, int32_t* M);
+int add_ebreak(int32_t* M);
 
 uint32_t pc = 0;
 int32_t GPR[GPR_AMOUNT] = {0};
 // int32_t M[MEMORY_AMOUNT] = {0};
 
 int _operating_circles = 0;
+int next = 0;
 
 int main(int argc, char** argv){
     // load the codes into memory
@@ -47,14 +51,23 @@ int main(int argc, char** argv){
 
     assert(argc >= 2);
     load_memory(argv[1], M);
+    int _SUCESSFUL_ADD_EBREAK = add_ebreak(M);
+    assert(_SUCESSFUL_ADD_EBREAK);
 
     // operate until the very end
-    while(_operating_circles <= OPERATING_CIRCLE_TERMINATION__MEM){
-        int next = operate(M);
+    while(next != -99){
+        next = operate(M);
         assert(next != -1);
         pc = next;
         output_elements(_operating_circles, next, M);         // print all variants (GPRs) for each loop
         _operating_circles++;
+    }
+    if(GPR[10] != 0){
+        printf("HIT BAD TRAP\n");
+        printf("ERROR, PROGRAM ENDED, X0 is not equal to 0\n");
+    }
+    else{
+        printf("HIT GOOD TRAP\n");
     }
     free(M);
 }
@@ -69,6 +82,17 @@ void load_memory(char* filename, int32_t* M){
     fclose(fp);
 
     printf("--LOAD %zu AMOUNTS OF INSTR TO M[]\n", loaded_instr);
+}
+
+int add_ebreak(int32_t* M){
+    for (size_t i = 0; i < MEMORY_LOAD_EFFECTIVENESS; i++)
+    {
+        if(M[i] == 0x00000513){
+            M[i + 1] = 0x00100073;
+            return 1;
+        }
+    }  
+    return 0;
 }
 
 void print_binary_int32(int32_t num) {
@@ -86,8 +110,10 @@ void output_elements(int circle, int next, int32_t* M){     // &&&
         printf("GPR %d: %d\n", i, GPR[i]);
     }
     printf("NEXT: %d\n", next);
-    printf("NEXT INSTR: ");
-    print_binary_int32(M[next >> 2]);
+    if(next != -99){
+        printf("NEXT INSTR: ");
+        print_binary_int32(M[next >> 2]);
+    }
     printf("\n\n");
 }
 
@@ -199,6 +225,9 @@ int operate(int32_t* M){
                 M[word_idx] = word;
             }
             next = pc + 4;
+            break;
+        case 0b1110011:    // ebreak
+            next = -99;
             break;
 
         default:
