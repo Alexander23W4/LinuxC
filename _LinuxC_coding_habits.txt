@@ -1,0 +1,13 @@
+-> DEALING WITH ERRORS (CODE INSERTED):
+two general method: 
+1. return wrong value 
+2. set global errno
+
+When calling a function , check the return value, if wrong, printf some warnings
+
+Additionally, use DEBUG MACRO^ for simplify the process.
+
+-> FOR ALL REPEATED THINGS, THINK ABOUT MACRO^^
+
+
+
