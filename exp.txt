@@ -1,3 +1,9 @@
+->^PO MACRO:
+1.Conditional Compilation  Cross Platform
+2.Representation 
+3.Debug
+
+
 -> FUNCTION MACRO:  
 #define IOE ({ ioe_init();  })
 #define CTE(h) ({ Context *h(Event, Context *); cte_init(h); })
