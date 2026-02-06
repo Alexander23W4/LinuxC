@@ -1,0 +1,185 @@
+1. 文本 / 文件名转换
+subst：简单字符串替换
+makefile
+# 把 TEXT 里所有 foo 换成 bar
+$(subst foo,bar,$(TEXT))
+例子：
+
+makefile
+SRC := foo.c bar.c
+OBJ := $(subst .c,.o,$(SRC))   # → foo.o bar.o
+
+patsubst：按模式替换（带 %）
+makefile
+# 把所有 %.c 换成 %.o
+$(patsubst %.c,%.o,$(SRC))
+比 subst 更适合文件后缀这种场景。
+
+2. 列表过滤 / 查找
+filter：保留匹配的
+makefile
+# 只保留 .c 和 .s 文件
+$(filter %.c %.s,$(FILES))
+
+filter-out：丢掉匹配的
+makefile
+# 去掉 test_*.c
+$(filter-out test_%.c,$(SRC))
+
+findstring：是否包含子串
+makefile
+$(findstring foo,$(TEXT))  # 包含则返回 foo，不含则返回空
+
+3. 单词操作（Make 把“用空格分开的东西”都当成“单词列表”）
+word / words / wordlist
+makefile
+$(words $(SRC))           # SRC 里单词个数
+$(word 2,$(SRC))          # 第二个单词
+$(wordlist 2,4,$(SRC))    # 第2~4个单词
+firstword
+makefile
+$(firstword $(SRC))       # 第一个单词，常用来取“主目标”
+
+4. 文件名相关
+dir / notdir
+makefile
+$(dir src/main.c lib/utils.c)      # → src/ lib/
+$(notdir src/main.c lib/utils.c)   # → main.c utils.c
+
+basename / suffix
+makefile
+$(basename main.c foo.cpp)   # → main foo
+$(suffix main.c foo.cpp)     # → .c .cpp
+
+addprefix / addsuffix
+makefile
+$(addprefix src/,$(FILES))   # foo.c → src/foo.c
+$(addsuffix .o,$(NAMES))     # foo → foo.o
+wildcard：按通配符找文件
+makefile
+SRC := $(wildcard src/*.c)   # 找出目录下所有 .c
+
+5. 条件与循环
+if
+makefile
+# 语法：$(if 条件,为真时的值,为假时的值)
+DEBUG_FLAGS := $(if $(DEBUG),-g,-O2)
+
+foreach
+makefile
+# 语法：$(foreach var,列表,表达式)
+OBJS := $(foreach f,$(SRC),$(f:.c=.o))
+
+call：自定义“函数”
+makefile
+define make-obj
+$(1:.c=.o)
+endef
+
+OBJS := $(call make-obj,$(SRC))
+
+6. 与外部命令交互
+shell：执行一条 shell，取输出
+makefile
+GIT_HASH := $(shell git rev-parse --short HEAD)
+
+7. 其他常用的几个
+origin：查变量从哪来的
+makefile
+$(origin CFLAGS)  # 命令行 / env / file / default 等
+value：取变量“字面值”（不展开里面的变量引用）
+makefile
+RAW := $(value CFLAGS)
+
+# DEFAULT VARIABLES:
+
+# Compiling a C program: n.o is made automatically from n.c with a command of the form 
+# $(CC) -c $(CPPFLAGS) $(CFLAGS) $^ -o $@
+# Compiling a C++ program: n.o is made automatically from n.cc or n.cpp with a command of the form 
+# $(CXX) -c $(CPPFLAGS) $(CXXFLAGS) $^ -o $@
+# Linking a single object file: n is made automatically from n.o by running the command 
+# $(CC) $(LDFLAGS) $^ $(LOADLIBES) $(LDLIBS) -o $@
+
+CFLAGS= -g -o0 -Wall
+SHELL=/bin/bash
+
+create:
+		mkdir -p ./Testfile && echo "sucessful"
+		mkdir -p build src tests bin
+
+file1: file1.c
+		gcc -g -o0 file1.c -o file1
+
+file1.c:
+		if [ ! -f file1.c ]; then \
+			touch file1.c && \
+			echo '#include <stdlib.h>\nint main(){return 0;}' > file1.c; \
+		fi
+
+f: f1.o f2.o
+
+# $@ means all targets 
+f1.o f2.o:
+	echo $@
+
+DEFAULT_FILES:= LICENSE|Makefile|README\.md
+
+clean:
+		rm -rf ./Testfile
+		ls -p ./ | grep -v '/$$' | grep -Ev "$(DEFAULT_FILES)" | xargs -I {} rm -rf {}   
+# \meaning tranfer valid only in "", but invalid in ''
+
+# single | double quote are note necessary in Makefile syntax
+fuck:
+		echo fuck
+
+all: create file1 fuck
+
+print: $(wildcard *.c)
+		ls -la  $?
+
+hey: one two
+	# Outputs "hey", since this is the target name
+	echo $@
+
+	# Outputs all prerequisites newer than the target
+	echo $?
+
+	# Outputs all prerequisites
+	echo $^
+
+	# Outputs the first prerequisite
+	echo $<
+
+	touch hey
+
+one:
+	touch one
+
+two:
+	touch two
+
+objects= file1.o file2.o file.c
+
+
+# Syntax - targets ...: target-pattern: prereq-patterns ...
+# In the case of the first target, foo.o, the target-pattern matches foo.o and sets the "stem" to be "foo".
+# It then replaces the '%' in prereq-patterns with that stem
+
+# suck: $(objects)
+# 		echo $(CC)
+
+# $(objects): %.o: %.c 
+# 		gcc -c $^ -o $@
+
+# (filter %.o,$(objects)): %.o: %.c 
+# 		gcc -c $^ -o $@
+
+# suckyou: suckyou.c 
+# .PHONY: suckyou
+
+
+# %:%.c 
+# 		echo $<
+# 		echo $@
+# 		gcc -c $< -o $@
