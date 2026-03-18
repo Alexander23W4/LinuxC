@@ -56,3 +56,11 @@ int main(int argc, char *argv[])
     return 0;
 }
 
+// addtional question:
+/*
+int → char   cut the lowest 8 bits
+char[4] → over bounded
+int x = *(int*)name;  transform 
+char *another = "Zed";
+*/
+

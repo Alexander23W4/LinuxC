@@ -45,3 +45,15 @@ int main(int argc, char *argv[])
 
     return 0;
 }
+/*
+int i = 0;
+while(i < argc && i < num_states) {
+    states[i] = argv[i];
+    i++;
+}
+
+states[i] = argv[i]   // it's addr copy
+
+states[i] = malloc(strlen(argv[i]) + 1);
+strcpy(states[i], argv[i]);
+*/

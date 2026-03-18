@@ -23,3 +23,11 @@ int main(int argc, char *argv[])
 
     return 0;
 }
+
+// additional questions:
+/*
+for (init; cond; step)
+e.g. for(i=0, j=0; i<10; i++, j+=2)
+NULL equals to nullptr,  enpty pointer
+argv[1] = states[0];  // originally is addr copy 
+*/

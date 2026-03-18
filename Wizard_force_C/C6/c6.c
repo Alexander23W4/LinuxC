@@ -4,12 +4,15 @@ int main(int argc, char *argv[])
 {
     int areas[] = {10, 12, 13, 14, 20};
     char name[] = "Zed";
+    name[2] = 'm';
     char full_name[] = {
         'Z', 'e', 'd',
          ' ', 'A', '.', ' ',
          'S', 'h', 'a', 'w', '\0'
     };
+    full_name[4] = 'B';
     areas[3] = full_name[5];
+    areas[4] = name[2];
     printf("%d\n", (int)full_name[5]);
     printf("%c\n", areas[3]); 
     // WARNING: On some systems you may have to change the
@@ -20,7 +23,7 @@ int main(int argc, char *argv[])
     printf("The number of ints in areas: %ld\n",
             sizeof(areas) / sizeof(int));
     printf("The first area is %d, the 2nd %d.\n",
-            areas[0], areas[1]);
+            areas[3], areas[4]);
 
     printf("The size of a char: %ld\n", sizeof(char));
     printf("The size of name (char[]): %ld\n",
