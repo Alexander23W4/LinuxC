@@ -1,11 +1,20 @@
 #ifndef _object_h
 #define _object_h
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <errno.h>
+#include <string.h>
+#include <stdint.h>
+#include <stddef.h>
+
+// enum & function_pointer  is flexible 
+
 typedef enum {
     NORTH, SOUTH, EAST, WEST
-} Direction;
+} Direction;    // enum -> a group of state parameters
 
-typedef struct {
+typedef struct {    // different character has different locomotive behaviour
     char *description;
     int (*init)(void *self);
     void (*describe)(void *self);
@@ -14,6 +23,7 @@ typedef struct {
     int (*attack)(void *self, int damage);
 } Object;
 
+// default locomotive setting for Objects
 int Object_init(void *self);
 void Object_destroy(void *self);
 void Object_describe(void *self);
