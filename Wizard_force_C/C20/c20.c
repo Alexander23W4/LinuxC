@@ -1,8 +1,14 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdarg.h>
+#include <string.h>  
 
 #define MAX_DATA 100
+
+// required macros for error handling
+#define check(A, M, ...) if(!(A)) { fprintf(stderr, M "\n", ##__VA_ARGS__); goto error; }
+#define sentinel(M, ...) { fprintf(stderr, M "\n", ##__VA_ARGS__); goto error; }
+#define check_mem(A) check((A), "Out of memory.")
 
 int read_string(char **out_string, int max_buffer)
 {
@@ -11,6 +17,12 @@ int read_string(char **out_string, int max_buffer)
 
     char *result = fgets(*out_string, max_buffer, stdin);
     check(result != NULL, "Input error.");
+
+    // remove trailing newline from fgets
+    size_t len = strlen(*out_string);
+    if(len > 0 && (*out_string)[len - 1] == '\n') {
+        (*out_string)[len - 1] = '\0';
+    }
 
     return 0;
 
@@ -65,6 +77,10 @@ int read_scan(const char *fmt, ...)
                 case 'c':
                     out_char = va_arg(argp, char *);
                     *out_char = fgetc(stdin);
+
+                    // consume remaining characters until newline
+                    int c;
+                    while((c = getchar()) != '\n' && c != EOF);
                     break;
 
                 case 's':
@@ -78,6 +94,7 @@ int read_scan(const char *fmt, ...)
                     sentinel("Invalid format.");
             }
         } else {
+            // consume a character if format expects a literal
             fgetc(stdin);
         }
 
@@ -92,8 +109,6 @@ error:
     return -1;
 }
 
-
-
 int main(int argc, char *argv[])
 {
     char *first_name = NULL;
@@ -106,7 +121,7 @@ int main(int argc, char *argv[])
     check(rc == 0, "Failed first name.");
 
     printf("What's your initial? ");
-    rc = read_scan("%c\n", &initial);
+    rc = read_scan("%c", &initial);
     check(rc == 0, "Failed initial.");
 
     printf("What's your last name? ");
@@ -115,16 +130,51 @@ int main(int argc, char *argv[])
 
     printf("How old are you? ");
     rc = read_scan("%d", &age);
+    check(rc == 0, "Failed age.");
 
     printf("---- RESULTS ----\n");
-    printf("First Name: %s", first_name);
+    printf("First Name: %s\n", first_name);
     printf("Initial: '%c'\n", initial);
-    printf("Last Name: %s", last_name);
+    printf("Last Name: %s\n", last_name);
     printf("Age: %d\n", age);
 
     free(first_name);
     free(last_name);
     return 0;
+
 error:
     return -1;
 }
+
+
+//test:
+
+int sum(int count, ...)
+{
+    va_list args;
+    va_start(args, count);   // start    consider "count" amount of args
+
+    int total = 0;
+    for(int i = 0; i < count; i++) {
+        total += va_arg(args, int);    // get one arg
+    }
+
+    va_end(args);    // end
+    return total;
+}
+
+void log_info(const char *fmt, ...)   // ****
+{
+    va_list args;
+    va_start(args, fmt);
+
+    printf("[INFO] ");
+    vprintf(fmt, args);
+
+    va_end(args);
+}
+
+void test(){
+    log_info("user=%s age=%d\n", "wang", 20);  
+}
+
