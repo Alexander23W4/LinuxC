@@ -114,3 +114,19 @@ int main(int argc, char *argv[])
 
     return 0;
 }
+
+
+// additional questions:
+/*
+void bubble_sort(int *numbers, int count, compare_cb cmp) {
+    for(int i = 0; i < count; i++) {
+        for(int j = 0; j < count - 1; j++) {
+            if(cmp(numbers[j], numbers[j+1]) > 0) {
+                int tmp = numbers[j];
+                numbers[j] = numbers[j+1];
+                numbers[j+1] = tmp;
+            }
+        }
+    }
+}
+*/

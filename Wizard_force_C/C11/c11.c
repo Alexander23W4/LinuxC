@@ -54,3 +54,28 @@ int main(int argc, char *argv[])
 
     return 0;
 }
+
+// additional questions:
+/*
+*(numbers + i)
+for(int *p = numbers; p < numbers + 4; p++) {
+    printf("%d\n", *p);
+}
+
+
+char **p = argv;
+
+for(int i = 0; i < argc; i++) {
+    printf("%s\n", *(p + i));
+}
+
+for(int i = 0; i < 4; i++) {
+    printf("%p\n", (void*)&numbers[i]);
+}
+
+int *p = numbers;
+while(p < numbers + 4) {
+    printf("%d\n", *p);
+    p++;
+}
+*/

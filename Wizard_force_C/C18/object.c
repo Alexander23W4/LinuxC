@@ -66,11 +66,20 @@ void *Object_new(size_t size, Object proto, char *description)
     }
 }
 
+// additional questions:
 void test(){
     const char* foo = "Hey";
     Object fooProto;
     NEW(foo, 10);
     fooProto.attack = Object_attack;
 }
+
+/*
+struct Room {
+    char *name;
+    int monster;
+    struct Room *north, *south;
+};
+*/
 
 

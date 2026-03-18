@@ -71,3 +71,41 @@ int main(int argc, char *argv[])
 
     return 0;
 }
+
+// additional questions:
+/*
+strcpy(you.name, "Zed");
+you.age = 30;
+you.height = 180;
+you.weight = 80;
+
+#include <stdio.h>
+#include <string.h>
+
+struct Person {
+    char name[50];
+    int age;
+    int height;
+    int weight;
+};
+
+void print_person(struct Person p) {
+    printf("Name: %s\n", p.name);
+    printf("Age: %d\n", p.age);
+    printf("Height: %d\n", p.height);
+    printf("Weight: %d\n", p.weight);
+}
+
+int main() {
+    struct Person you;
+
+    strcpy(you.name, "Zed");
+    you.age = 30;
+    you.height = 180;
+    you.weight = 80;
+
+    print_person(you);
+
+    return 0;
+}
+*/

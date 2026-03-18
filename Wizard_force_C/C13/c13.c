@@ -198,3 +198,34 @@ int main(int argc, char *argv[])
 
     return 0;
 }
+
+// additional questions:
+/*
+void die(struct Connection *conn, const char *msg) {
+    if(conn) {
+        if(conn->file) fclose(conn->file);
+        if(conn->db) free(conn->db);
+        free(conn);
+    }
+    perror(msg);
+    exit(1);
+}
+
+void Database_find(struct Connection *conn, char *name) {
+    for(int i = 0; i < conn->db->max_rows; i++) {
+        if(conn->db->rows[i].set &&
+           strcmp(conn->db->rows[i].name, name) == 0) {
+            Address_print(&conn->db->rows[i]);
+        }
+    }
+}
+
+// automatic test code 
+#!/bin/bash
+set -e
+
+./db test.db c 100 32
+./db test.db s 1 "Zed"
+./db test.db g 1
+./db test.db f "Zed"
+*/
