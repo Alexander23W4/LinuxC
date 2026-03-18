@@ -24,8 +24,3 @@ void v_print_letters(char arg[])
 
 }
 
-int main(int argc, char *argv[])
-{
-    v_print_arguments(argc, argv);
-    return 0;
-}

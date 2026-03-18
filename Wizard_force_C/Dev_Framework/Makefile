@@ -15,9 +15,12 @@
 # 
 
 # KEYWORDS: file_variable  non_file_variable  file_dependent_command    pure_execution_command
-#      notice: pure_execution_command also could be dependency
+#      notice: pure_execution_command also could be dependency, means execute this command before execute me
+#      dependency natrually includes ->dependent files or dir  ->pre-execute required commands
 
 # foo=bar make all     this type could diliver variable foo to the following "make all" process
+
+# all of the pure-execution_command should be added to **->.PHONY
 #------FLAGS------
 CFLAGS=-g -O2 -Wall -Wextra -Isrc -rdynamic -DNDEBUG $(OPTFLAGS)
 LIBS=-ldl $(OPTLIBS)
