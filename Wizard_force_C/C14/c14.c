@@ -3,6 +3,8 @@
 #include <errno.h>
 #include <string.h>
 
+// function pointer is naturally utilize in other function 
+
 /** Our old friend die from ex17. */
 void die(const char *message)
 {
@@ -17,13 +19,15 @@ void die(const char *message)
 
 // a typedef creates a fake type, in this
 // case for a function pointer
-typedef int (*compare_cb)(int a, int b);
+typedef int (*compare_cb)(int a, int b);  // function pointer define
+
+
 
 /**
  * A classic bubble sort function that uses the
  * compare_cb to do the sorting.
  */
-int *bubble_sort(int *numbers, int count, compare_cb cmp)
+int *bubble_sort(int *numbers, int count, compare_cb cmp)    // function pointer use
 {
     int temp = 0;
     int i = 0;
@@ -95,6 +99,7 @@ int main(int argc, char *argv[])
     char **inputs = argv + 1;
 
     int *numbers = malloc(count * sizeof(int));
+
     if(!numbers) die("Memory error.");
 
     for(i = 0; i < count; i++) {
