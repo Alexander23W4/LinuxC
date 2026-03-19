@@ -7,7 +7,9 @@ typedef int (*lib_function_ext) (const char* data, int n);
 char *lib_file = "build/lib29.so";
 void *lib = NULL;
 
-// check function common framework
+
+//-------------------check function common framework----------------------------
+// ***!!!: these way to write check function is waste, I should think of MACRO representation instead momentarily
 int check_function(const char *func_to_run, const char *data, int expected)
 {
     lib_function func = dlsym(lib, func_to_run);
@@ -82,6 +84,8 @@ char *test_dlclose()
 
     return NULL;
 }
+
+// ----------------------------------------------------------------------------
 
 char *all_tests()  // all-batch test
 {

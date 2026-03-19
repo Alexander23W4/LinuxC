@@ -1,6 +1,9 @@
 #!/bin/bash
 echo "Running unit tests:"
 
+# base on bash command line, run all test.c files, do automatic testing in batch
+# each of the test.c file is a dependent test process
+# redirect all test logs to LOG FILE
 LIB_SOURCE=
 TEST_FUNCTION=
 PARAMETER=
