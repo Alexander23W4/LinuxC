@@ -29,7 +29,7 @@ PREFIX?=/usr/local
 #------FILES------
 # SOURCE
 SOURCES=$(wildcard src/**/*.c src/*.c)   # use wildcard grasp all the .c file under the dir, batch them as SOURCES
-OBJECTS=$(patsubst %.c,%.o,$(SOURCES))   # use patsubat convert all the files in SOURCES to .o and batch them as OBJECTS
+OBJECTS=$(patsubst %.c,%.o,$(SOURCES))   # use patsubst convert all the files in SOURCES to .o and batch them as OBJECTS
 
 # TEST
 TEST_SRC=$(wildcard tests/*_tests.c)     # search for test files  (*wildcard)
@@ -39,21 +39,19 @@ TESTS=$(patsubst %.c,%,$(TEST_SRC))
 TARGET=build/lib29.a      # .a   static lib     copy all when compiling (cumbersome)
 SO_TARGET=$(patsubst %.a,%.so,$(TARGET))    # .so   shared lib   citing when compiling
 
-
 #------SUBCOMMANDS------
 # The Target Build
 all: $(TARGET) $(SO_TARGET) tests     # operate   construct lib files -> operate test files
                                       # execute "make all" -> execute dependent commands: [$(TARGET) $(SO_TARGET) tests] 
 
-dev: CFLAGS=-g -Wall -Isrc -Wall -Wextra $(OPTFLAGS)  # make dev:  use new CFLAGS and execute "make al"
+dev: CFLAGS=-g -Wall -Isrc -Wall -Wextra $(OPTFLAGS)  # make dev:  use new CFLAGS and execute "make all"
 dev: all
 
 $(TARGET): CFLAGS += -fPIC    # variable condition change:   reset some condition in order to build $(TARGET)
 $(TARGET): build $(OBJECTS)   # recipe:  for generate $(TARGET)   # *** important: if $(OBJECT) is none, automatically compile .c->.o
-	ar rcs $@ $(OBJECTS)     
-	ranlib $@                   
-     # pack all the .o files -> .a (static lib)     &     generate index link for .a
-
+	ar rcs $@ $(OBJECTS)
+	ranlib $@
+# pack all the .o files -> .a (static lib)     &     generate index link for .a
 
 $(SO_TARGET): $(TARGET) $(OBJECTS)
 	$(CC) -shared -o $@ $(OBJECTS)   
@@ -68,7 +66,7 @@ tests: CFLAGS +=  -ldl $(TARGET)
 tests: $(TESTS)
 	bash ./tests/runtests.sh
 
-valgrind:                 # deliver VARGRIND  variable to following "make" process, the following make process could use this variable 
+valgrind:                 # deliver VALGRIND variable to following "make" process, the following make process could use this variable 
 	VALGRIND="valgrind --log-file=/tmp/valgrind-%p.log" $(MAKE)    
 
 # The Cleaner
@@ -92,8 +90,29 @@ check:
 target: $(TARGET) $(SO_TARGET)
 	rm -rf $(OBJECTS)
 
+#static test:
+DIR=src
+FILE=libex29.c
+OBJECT=$(basename $(FILE))
+
+debug:
+	gcc -Wall -g $(CFLAGS) -O0 ./$(DIR)/$(FILE) -o $(OBJECT)
+
+fast:
+	gcc -Wall -g $(CFLAGS) -O2 ./$(DIR)/$(FILE) -o $(OBJECT)
+
+lint:
+	clang -Wall -g ./$(DIR)/$(FILE) --analyze -Xanalyzer -analyzer-output=text
+
+val: $(OBJECT)
+	valgrind ./$(OBJECT)
+
+$(OBJECT): CFLAGS=-Wall -g
+$(OBJECT): $(DIR)/$(FILE)
+	gcc $(CFLAGS) -O0 ./$(DIR)/$(FILE) -o $(OBJECT)
+
 # MAN=key.c
 # show: $(MAN)
-#        echo "showtime"
+#	echo "showtime"
 # $(MAN): 
-#        (commands for generate key.c)
+#	(commands for generate key.c)

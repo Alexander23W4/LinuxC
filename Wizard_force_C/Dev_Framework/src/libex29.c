@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <ctype.h>
+#include <assert.h>
 #include "../dbg.h"
 
 
@@ -36,6 +37,20 @@ int lowercase(const char *msg)
 
     printf("\n");
 
+    return 0;
+}
+
+// print first n char in string msg
+// ** length < n 
+int _print_msg(const char* msg, int n){
+    assert(n >= 0);
+    int length = (int)strlen(msg);
+    int temp = length > n ? n : length;
+    for (int i = 0; i < temp; i++)
+    {
+        printf("%c", msg[i]);
+    }
+    printf("\n");
     return 0;
 }
 

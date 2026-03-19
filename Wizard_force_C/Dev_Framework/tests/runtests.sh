@@ -1,12 +1,12 @@
 #!/bin/bash
 echo "Running unit tests:"
 
-LIB_SOURCE=build/lib29.so
-TEST_FUNCTION=uppercase
-PARAMETER="hello"
+LIB_SOURCE=
+TEST_FUNCTION=
+PARAMETER=
 
+# batch-execute test files, put output log into log file
 for i in tests/*_tests
-
 do
     if test -f $i
     then      # redirect output to log file (useful)

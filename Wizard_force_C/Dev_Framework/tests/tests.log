@@ -1,2 +1,18 @@
-[ERROR] (tests/ex29_tests.c:18: errno: None) USAGE: ex29 libex29.so function data
-[ERROR] (tests/ex29_tests.c:18: errno: None) USAGE: ex29 libex29.so function data
+DEBUG tests/libex29_tests.c:99: ----- RUNNING: ./tests/libex29_tests
+DEBUG tests/libex29_tests.c:90: 
+----- test_dlopen
+DEBUG tests/libex29_tests.c:91: 
+----- test_functions
+DEBUG tests/libex29_tests.c:92: 
+----- test__print_msg
+DEBUG tests/libex29_tests.c:94: 
+----- test_dlclose
+DEBUG tests/libex29_tests.c:99: ----- RUNNING: ./tests/libex29_tests
+DEBUG tests/libex29_tests.c:90: 
+----- test_dlopen
+DEBUG tests/libex29_tests.c:91: 
+----- test_functions
+DEBUG tests/libex29_tests.c:92: 
+----- test__print_msg
+DEBUG tests/libex29_tests.c:94: 
+----- test_dlclose
