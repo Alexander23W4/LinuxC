@@ -36,7 +36,7 @@ TEST_SRC=$(wildcard tests/*_tests.c)     # search for test files  (*wildcard)
 TESTS=$(patsubst %.c,%,$(TEST_SRC))
 
 # TARGET
-TARGET=build/libYOUR_LIBRARY.a      # .a   static lib     copy all when compiling (cumbersome)
+TARGET=build/lib29.a      # .a   static lib     copy all when compiling (cumbersome)
 SO_TARGET=$(patsubst %.a,%.so,$(TARGET))    # .so   shared lib   citing when compiling
 
 
@@ -64,9 +64,9 @@ build:
 
 # The Unit Tests
 .PHONY: tests
-tests: CFLAGS += $(TARGET)
+tests: CFLAGS +=  -ldl $(TARGET)
 tests: $(TESTS)
-	sh ./tests/runtests.sh
+	bash ./tests/runtests.sh
 
 valgrind:                 # deliver VARGRIND  variable to following "make" process, the following make process could use this variable 
 	VALGRIND="valgrind --log-file=/tmp/valgrind-%p.log" $(MAKE)    
@@ -89,6 +89,8 @@ check:
 	@echo Files with potentially dangerous functions.
 	@egrep $(BADFUNCS) $(SOURCES) || true
 
+target: $(TARGET) $(SO_TARGET)
+	rm -rf $(OBJECTS)
 
 # MAN=key.c
 # show: $(MAN)

@@ -1,9 +1,16 @@
 #include <stdio.h>
-#include "dbg.h"
+#include "../dbg.h"
 #include <dlfcn.h>
 
 typedef int (*lib_function)(const char *data);
 
+// dynamically load libex29.so  
+// choose a function to operate
+// for example: 
+// ./ex29 ./libex29.so print_a_message "hello there"
+
+// error usage: ./libex29.so print_a_message "hello"
+// dynamic lib should call by other main function, with dlopen()  dlsym() dlclose()...
 
 int main(int argc, char *argv[])
 {
@@ -14,7 +21,7 @@ int main(int argc, char *argv[])
     char *func_to_run = argv[2];
     char *data = argv[3];
 
-    void *lib = dlopen(lib_file, RTLD_NOW);
+    void *lib = dlopen(lib_file, RTLD_NOW);    // open lib
     check(lib != NULL, "Failed to open the library %s: %s", lib_file, dlerror());
 
     lib_function func = dlsym(lib, func_to_run);
@@ -23,7 +30,7 @@ int main(int argc, char *argv[])
     rc = func(data);
     check(rc == 0, "Function %s return %d for data: %s", func_to_run, rc, data);
 
-    rc = dlclose(lib);
+    rc = dlclose(lib);  // close lib
     check(rc == 0, "Failed to close %s", lib_file);
 
     return 0;
