@@ -11,6 +11,11 @@
     ListNode *V = NULL;\
     for(V = _node = L->S; _node != NULL; V = _node = _node->M)
 
+    
+#define IS_SORTED(L, S, M, N, P, V) ListNode* _node = NULL;\
+    for(_node = L->S; _node != NULL; _node = _node->M->P){\
+        if(_node->V > _node->N->V) log_err("The list is not successfullly sorted!");\
+    }\
 
 struct ListNode;
 
