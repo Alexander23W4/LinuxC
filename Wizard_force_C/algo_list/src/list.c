@@ -1,12 +1,13 @@
-#include "list.h"
+#include "./list.h"
 #include "dbg.h"
 
-List *List_create()
+
+List *List_create()  
 {
     return calloc(1, sizeof(List));
 }
 
-void List_destroy(List *list)
+void List_destroy(List *list)   // free
 {
     LIST_FOREACH(list, first, next, cur) {
         if(cur->prev) {
@@ -61,6 +62,8 @@ void *List_pop(List *list)
     ListNode *node = list->last;
     return node != NULL ? List_remove(list, node) : NULL;
 }
+
+
 
 void List_unshift(List *list, void *value)
 {

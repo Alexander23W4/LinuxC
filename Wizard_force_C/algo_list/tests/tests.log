@@ -1,0 +1,5 @@
+DEBUG tests/list_tests.c:88: ----- RUNNING: ./tests/list_tests
+DEBUG tests/list_tests.c:82: 
+----- test_bubble_sort
+DEBUG tests/list_tests.c:83: 
+----- test_merge_sort
