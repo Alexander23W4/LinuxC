@@ -9,7 +9,7 @@
 #define GPR_AMOUNT 32
 #define GENERAL_BIT_WIDTH 32
 #define MEMORY_AMOUNT 524288  // 2MB
-#define MEMORY_LOAD_EFFECTIVENESS 2000
+#define MEMORY_LOAD_EFFECTIVENESS 2000   // instr stored memory range
 
 /*
 mini-RV ISA   8 in total:
@@ -32,15 +32,15 @@ void load_memory(char* filename, int32_t* M);
 int add_ebreak(int32_t* M);
 
 uint32_t pc = 0;
-int32_t GPR[GPR_AMOUNT] = {0};
+int32_t GPR[GPR_AMOUNT] = {0};  // store signed number
 // int32_t M[MEMORY_AMOUNT] = {0};
 
 int _operating_circles = 0;
-int next = 0;
+int next = 0;  // next pc
 
 int main(int argc, char** argv){
     // load the codes into memory
-    int32_t* M = (int32_t*)malloc(MEMORY_AMOUNT);
+    int32_t* M = (int32_t*)malloc(MEMORY_AMOUNT); 
     if (M == NULL) {
         perror("malloc failed");
         exit(1);
@@ -57,12 +57,12 @@ int main(int argc, char** argv){
     // operate until the very end
     while(next != -99){
         next = operate(M);
-        assert(next != -1);
+        assert(next != -1);  // if == -1, fail to decode 
         pc = next;
         output_elements(_operating_circles, next, M);         // print all variants (GPRs) for each loop
         _operating_circles++;
     }
-    if(GPR[10] != 0){
+    if(GPR[10] != 0){   // after operation check
         printf("HIT BAD TRAP\n");
         printf("ERROR, PROGRAM ENDED, X0 is not equal to 0\n");
     }
@@ -71,6 +71,7 @@ int main(int argc, char** argv){
     }
     free(M);
 }
+
 void load_memory(char* filename, int32_t* M){   
     FILE *fp = fopen(filename, "rb");  
     assert(fp);
@@ -85,7 +86,7 @@ void load_memory(char* filename, int32_t* M){
 }
 
 int add_ebreak(int32_t* M){
-    for (size_t i = 0; i < MEMORY_LOAD_EFFECTIVENESS; i++)
+    for (size_t i = 0; i < MEMORY_LOAD_EFFECTIVENESS; i++)  
     {
         if(M[i] == 0x00000513){
             M[i + 1] = 0x00100073;
@@ -106,18 +107,18 @@ void print_binary_int32(int32_t num) {
 
 void output_elements(int circle, int next, int32_t* M){     // &&&
     printf("---%d---", circle);
-    for(int i = 0; i < GPR_AMOUNT; i++){
+    for(int i = 0; i < GPR_AMOUNT; i++){    // scan gpr
         printf("GPR %d: %d\n", i, GPR[i]);
     }
-    printf("NEXT: %d\n", next);
+    printf("NEXT: %d\n", next);   // next pc
     if(next != -99){
-        printf("NEXT INSTR: ");
+        printf("NEXT INSTR: ");   // next instr
         print_binary_int32(M[next >> 2]);
     }
     printf("\n\n");
 }
 
-int32_t imm_conbination__s_type(uint32_t code) {   
+int32_t imm_conbination__s_type(uint32_t code) {   // combine two parts of imm
     int imm11_5 = (code >> 25) & 0x7F;    // bit[31:25]
     int imm4_0 = (code >> 7) & 0x1F;      // bit[11:7]      
     
@@ -128,12 +129,12 @@ int32_t imm_conbination__s_type(uint32_t code) {
 int32_t sign_extend(int num, int bit_width) {    // &&&  
 
     int32_t result;
-    int signed_bit = (num >> (bit_width - 1)) & 1;
+    int signed_bit = (num >> (bit_width - 1)) & 1;  // get signed bit 
     if(signed_bit == 0){
-        result = num | 0x00000000;
+        result = num | 0x00000000;   // number itself + extend 0
     }
     else{
-        result = ((0xFFFFFFFF >> bit_width) << bit_width) | num;
+        result = ((0xFFFFFFFF >> bit_width) << bit_width) | num;  // law bit_width bits remains 0, others->1
     }
     return result;
 }
@@ -185,18 +186,18 @@ int operate(int32_t* M){
             rs1 = (code >> 15) & 0x1F;
             rd = (code >> 7) & 0x1F;
             imm = sign_extend(code >> 20, 12);
-            if(opcode__a == 0b010){ // lw
+            if(opcode__a == 0b010){ // lw (load word)
                 GPR[rd] = M[(GPR[rs1] + imm) >> 2];   // draw data from memory, Byte addr >> 2
             }
-            else{    // lbu
+            else{    // lbu (load Byte)
                 uint32_t addr = GPR[rs1] + imm;
-                uint32_t word_idx = addr >> 2;
+                uint32_t word_idx = addr >> 2;  // normal index
                 int byte_offset = addr & 0x3;
                 
-                uint32_t word = M[word_idx];
+                uint32_t word = M[word_idx];  // normal content
                 uint8_t byte_val;
                 
-                byte_val = (word >> (byte_offset * 8)) & 0xFF;
+                byte_val = (word >> (byte_offset * 8)) & 0xFF; // select Byte
                 GPR[rd] = byte_val | 0x00000000; 
             }
             next = pc + 4;
@@ -215,10 +216,10 @@ int operate(int32_t* M){
             printf("__SWSB_STORE_ADDR: %d\n", word_idx);
             int byte_off = addr & 3;
             
-            if (funct3 == 0b010) {  // SW
+            if (funct3 == 0b010) {  // SW (save word)
                 M[word_idx] = GPR[rs2]; 
             } 
-            else if (funct3 == 0b000) {  // SB
+            else if (funct3 == 0b000) {  // SB (save Byte)
                 uint32_t word = M[word_idx];
                 word &= ~(0xFF << (byte_off * 8));  
                 word |= ((GPR[rs2] & 0xFF) << (byte_off * 8));  
