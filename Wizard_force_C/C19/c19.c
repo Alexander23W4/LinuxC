@@ -1,34 +1,47 @@
 #include <stdio.h>
+#include "./dbg.h"
 
 #define MAX_DATA 100
 
-typedef enum EyeColor {
-    BLUE_EYES, GREEN_EYES, BROWN_EYES,
-    BLACK_EYES, OTHER_EYES
+typedef enum EyeColor{
+    BLUE_EYES,
+    GREEN_EYES,
+    BROWN_EYES,
+    BLACK_EYES,
+    OTHER_EYES
 } EyeColor;
+// naminated enumeration
+// function of naminated enumeration is "CHOICE"
 
 const char *EYE_COLOR_NAMES[] = {
     "Blue", "Green", "Brown", "Black", "Other"
 };
 
 typedef struct Person {
-    int age; 
+    int age;
     char first_name[MAX_DATA];
     char last_name[MAX_DATA];
-    EyeColor eyes;   // state
+    EyeColor eyes;  // nominated enumeration (CHOICE)
     float income;
 } Person;
 
 
 int main(int argc, char *argv[])
 {
-    Person you = {.age = 0};    // init parameter    ** the type
+    Person you = {.age = 0}; // significant
+
+    // Person foo = {
+    //     .age = 10,
+    //     .eyes = BLACK_EYES
+    // };
+
     int i = 0;
     char *in = NULL;
 
     printf("What's your First Name? ");
     in = fgets(you.first_name, MAX_DATA-1, stdin);
-    check(in != NULL, "Failed to read first name.");
+    in = fgets(you.first_name, MAX_DATA-1, stdin);
+    check(in != NULL, "Failed to read first name.");  // check
 
     printf("What's your Last Name? ");
     in = fgets(you.last_name, MAX_DATA-1, stdin);
@@ -45,7 +58,7 @@ int main(int argc, char *argv[])
     printf("> ");
 
     int eyes = -1;
-    rc = fscanf(stdin, "%d", &eyes);
+    rc = fscanf(stdin, "%d", &eyes);   // open stdin interface, read data from command line
     check(rc > 0, "You have to enter a number.");
 
     you.eyes = eyes - 1;
@@ -69,23 +82,7 @@ error:
     return -1;
 }
 
+// #ifndef A
+// #define _concat(A,B) (#A)(#B)A##B
+// #endif
 
-
-/*
-scanf()   → stdin keyboard
-fscanf()  → FILE* from file
-
-scanf("%49s", name);   stop while meet blank or enter
-
-int read_str(FILE *f, char *buf, int size) {
-    int i = 0;
-    int c;
-
-    while(i < size - 1 && (c = fgetc(f)) != EOF) {
-        buf[i++] = c;
-    }
-
-    buf[i] = '\0';
-    return i;
-}
-*/

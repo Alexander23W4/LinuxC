@@ -49,7 +49,7 @@ void *Object_new(size_t size, Object proto, char *description)
 
     // this seems weird, but we can make a struct of one size,
     // then point a different pointer at it to "cast" it
-    Object *el = calloc(1, size);
+    Object *el = calloc(1, size);   // ***
     *el = proto;
 
     // copy the description over
@@ -70,7 +70,7 @@ void *Object_new(size_t size, Object proto, char *description)
 void test(){
     const char* foo = "Hey";
     Object fooProto;
-    NEW(foo, 10);
+    NEW(foo, 10);     // 10x objects named fooProto
     fooProto.attack = Object_attack;
 }
 
