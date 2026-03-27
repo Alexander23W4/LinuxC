@@ -1,0 +1,23 @@
+
+#define _FUCK 1
+#ifndef _FUCK
+#ifdef _FUCKYOU
+#if
+#elif _FUCKYOU < FUCK
+    #error FUCK YOU 
+#else  
+    #warning YOU WILL BE FUCKED
+#endif
+#endif
+#endif
+#undef _FUCK
+
+#pragma pack(push, 1)
+struct PackedStruct {
+    char c;   
+    int  i;   
+};  
+#pragma pack(pop)
+
+#define CONCAT_IMPL(x, y) x##y
+#define _M(x) #x
