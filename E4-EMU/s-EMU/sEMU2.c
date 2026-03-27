@@ -2,6 +2,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <assert.h>
+#include "./debug_macro.h"
 /*
 sISA
 
@@ -32,8 +33,9 @@ Fill Momery with
 8: bner0 7, r3
 */
 
-void _v_fill_memory(int add_target)
+void _v_fill_memory(int add_target)   // add_target: 1 + 2 + ... + add_target
 {
+    log_info("Filling memory.");
     M[0] = 0b10000000 | (add_target & 0x0F);
     M[1] = 0b10010000;
     M[2] = 0b10100000;
@@ -49,17 +51,24 @@ uint8_t next_pc;
 int main(int argc, char** argv)
 {
     assert(argc >= 2);
-    _v_fill_memory(atoi(argv[1]));
+    int target = atoi(argv[1]);
+    check((target != 0 && target < 16), "Invalid command line argv input");
+    _v_fill_memory(target); // fill memory
+    log_info("CPU running.");
     while(pc != 8){
         next_pc = operate();
-        if(pc != 99){
+        if(pc != 99){   // 99: error_pc_code, operation error or initailization error
             pc = next_pc;
         }
         else{
+            log_err("PC reach invalid code, operation error.");
             printf("Error\n");
             break;
         }
     }
+    return 0;
+error:
+    return -1;
 }
 
 uint8_t operate(void){
@@ -68,18 +77,22 @@ uint8_t operate(void){
     // Decode, Execute, Update_PC: 
     switch(code >> 6){
         case 0b00:
+            log_info("ADD");   
             GPR[(code & 0b00110000) >> 4] = GPR[(code & 0b00001100) >> 2] + GPR[(code & 0b00000011)];
             next = pc + 1;
             break;
         case 0b01:
-            printf("Result: %d\n", GPR[code & 0b00000011]);
+            log_info("OUT");  
+            printf("Result: %d\n", GPR[code & 0b00000011]);   // out rs2
             next = pc + 1;
             break;
         case 0b10:
+            log_info("LI");  
             GPR[(code & 0b00110000) >> 4] = (code & 0b00001111);
             next = pc + 1;
             break;
         case 0b11:
+            log_info("BNER0");  
             next = (GPR[(code & 0b00000011)] == GPR[0]) ? (pc + 1) : ((code & 0b00111100) >> 2);
             break;
         default:
