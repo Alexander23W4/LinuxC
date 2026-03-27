@@ -4,6 +4,12 @@
 #include <assert.h>
 #include "./debug_macro.h"
 /*
+RUNTIME ENVIRONMENT:
+From another perspective, in order to make the program’s functionalities richer, 
+we can not only add more instructions but also provide a more powerful runtime environment for the program. 
+Below we attempt to add more functionalities to sEMU.
+*/
+/*
 sISA
 
 The opcode : add li bner0 
