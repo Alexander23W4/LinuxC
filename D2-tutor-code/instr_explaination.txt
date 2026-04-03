@@ -26,18 +26,47 @@ test (可执行文件)
 
 I could use objdump push .o file (not linked) back to assembly,
  check which specific instr compiler use for explain this c program
+------------------------------------
+Notice:
+
+Variable:
+RISC-V has 2 sets of integer ABI:
+ILP32 for RV32   LP64 for RV64
+ILP: Integer Long Pointer
+
+except char(1 Byte), diff ABI diff variable size
+
 
 ------------------------------------
-Instr level arrangement:
+Instr level arrangement (Compiler behavior .c -> .s(RV)):
 
+=> 1.Constant:
 -> How to load 32 bits constant
 -> How to load 64 bits constant (in RV64? in RV32?)
 
+=> 2.Variable:
+ABI define size
+
+=> 3.Variable distribution:
+priorly load to ram, if needed, load to register
+
+ 3 ram area for data storage: static data, heap(grow higher), stack(grow to lower addr)
+global variable, static domestic variable -> static data area
+non-static domestic variable -> stack
+dynamic distributed variable -> heap
+
+=> 4.Variable access:
+
 
 
 ------------------------------------
-
+->
 the cost of Instr-grasp miss is much larger than Data-grasp miss
 so sometimes compiler tend to use less Instr
+
+->
+register: ff
+normal ram: latch
+modern SRAM is DDR granule: one transistor + one capatitor (capatitor charging has delay, so memory access is slow)
  
 
