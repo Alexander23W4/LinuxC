@@ -16,3 +16,12 @@ DEBUG tests/libex29_tests.c:92:
 ----- test__print_msg
 DEBUG tests/libex29_tests.c:94: 
 ----- test_dlclose
+DEBUG tests/libex29_tests.c:103: ----- RUNNING: ./tests/libex29_tests
+DEBUG tests/libex29_tests.c:94: 
+----- test_dlopen
+DEBUG tests/libex29_tests.c:95: 
+----- test_functions
+DEBUG tests/libex29_tests.c:96: 
+----- test__print_msg
+DEBUG tests/libex29_tests.c:98: 
+----- test_dlclose

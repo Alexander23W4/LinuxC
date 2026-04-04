@@ -1,5 +1,5 @@
 // riscv64-unknown-elf-gcc -march=rv32i   -mabi=ilp32   -O2 -c test1.c
-// riscv64-unknown-elf-objdump -d -M no-aliases test1.o
+// riscv64-unknown-elf-objdump -d -M no-aliases test1.o      (objdump reassembly)
 
 // check binary file content: 
 # 只看纯二进制，去掉左边的地址和右边的ASCII
@@ -36,6 +36,8 @@ ILP: Integer Long Pointer
 
 except char(1 Byte), diff ABI diff variable size
 
+range condition judgement usually use transfer range + one end compare (another end use big nagative num)
+
 
 ------------------------------------
 Instr level arrangement (Compiler behavior .c -> .s(RV)):
@@ -50,14 +52,25 @@ ABI define size
 => 3.Variable distribution:
 priorly load to ram, if needed, load to register
 
+static data; heap; stack; text
  3 ram area for data storage: static data, heap(grow higher), stack(grow to lower addr)
+ 1 for text
 global variable, static domestic variable -> static data area
 non-static domestic variable -> stack
 dynamic distributed variable -> heap
 
 => 4.Variable access:
 
+=> 5.Operation & Cal:
+alus logics   bit logics  shift  compare  num-expansion
+RV32 cal 64bit add: (a1 a0) <- (a1, a0) + (a3, a2);
+a5 = a2 + a0, compare a5, a0, if a5<a0, carry occurs
+mv a0 a5;
+a1 = a1 + a3 + carry;
 
+as for signed add & unsigned add, for hardware they look same
+
+=> 6.Condition (if, case..)
 
 ------------------------------------
 ->
