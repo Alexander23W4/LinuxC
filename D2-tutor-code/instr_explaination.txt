@@ -71,6 +71,18 @@ a1 = a1 + a3 + carry;
 as for signed add & unsigned add, for hardware they look same
 
 => 6.Condition (if, case..)
+switch case: branch table(case table) + return table (the case shows in course shows compiler doesn't use tremendous beqs)
+            if values in case are massively discreted, compiler step back to use traditional beq method 
+
+=> 7.Circular (while for)
+
+=> *** Undefined behaviour *** (from c->s point of view)  somtimes for compatibility of multiple ABIs
+undefined behaviour is bad behaviour for machine and program, diff ABI(ISA), diff compiler could judge how to deal with it arbitarily.
+
+Hardware doesn't care signed or unsigned add, so add overflow is undifined behaviour
+RISC-V shift define maximum shift amount is 5bit-num(32 bits), shift amount beyond 32 bits is undifined behaviour
+Divided by 0: C undifined behaviour, RISC-V defines constant -1 as result
+
 
 ------------------------------------
 ->
@@ -82,4 +94,5 @@ register: ff
 normal ram: latch
 modern SRAM is DDR granule: one transistor + one capatitor (capatitor charging has delay, so memory access is slow)
  
-
+-> 
+use santisize, compiler could insert "assert()" in the program

@@ -1,3 +1,4 @@
+#include <stdio.h>
 int f(){
     return 0x123;
 }
@@ -9,6 +10,9 @@ int g(){
 int h(){
     return 0b101010;
 }
+
+int x __attribute__((unused));
+__attribute__((noinline)) int g(){ return 1 / 0; }
 
 // riscv64-unknown-elf-gcc -march=rv32i   -mabi=ilp32   -O2 -c test1.c
 // riscv64-unknown-elf-objdump -d -M no-aliases test1.o
