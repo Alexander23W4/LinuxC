@@ -43,7 +43,7 @@ range condition judgement usually use transfer range + one end compare (another 
 Instr level arrangement (Compiler behavior .c -> .s(RV)):
 
 => 1.Constant:
--> How to load 32 bits constant
+-> How to load 32 bits constant: if the number is longer than imm bits, we could use (e.g. lui + addi), load long imm to register
 -> How to load 64 bits constant (in RV64? in RV32?)
 
 => 2.Variable:
@@ -83,6 +83,26 @@ Hardware doesn't care signed or unsigned add, so add overflow is undifined behav
 RISC-V shift define maximum shift amount is 5bit-num(32 bits), shift amount beyond 32 bits is undifined behaviour
 Divided by 0: C undifined behaviour, RISC-V defines constant -1 as result
 
+=> 8. function calling
+system lib is dynamic lib
+a0-a7 use to transform parameter, a0/a1 use to transfer return values
+the way to transfer para depend on the LENGTH and amount of para
+in the case shows in the course, when I call a function which includes 10 register, the first 8 para are loaded into a0-a8 and 
+the remaining 2 parameters are loaded into memory(stack area)
+and the compiler distribute spare space in stack in advance for returned value (before run the func)
+
+function itself is stored in the text area of ram
+for variable_changable functions, the compiler arrange the parameters normally
+
+=> 9. stream use transfer
+just use jar  / auipc + jalr (jump longer)
+*** how to deal with insect calling functions parameter distribution problem, how does the inner called function use register resources without 
+ disrupt utter functions paramter? 
+*** the stored reg s0-s11 & ra (return addr) can not change while inner call process, 
+t0-t6(temparary register) & a0-a7(argument register) & ra(return addr) can change 
+
+the "can not change" registers actually could be changed by inner function while processing, but when return back to external function, 
+the value must be reversed
 
 ------------------------------------
 ->
@@ -96,3 +116,5 @@ modern SRAM is DDR granule: one transistor + one capatitor (capatitor charging h
  
 -> 
 use santisize, compiler could insert "assert()" in the program
+
+

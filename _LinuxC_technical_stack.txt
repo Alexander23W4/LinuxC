@@ -15,6 +15,7 @@ make sure some critical implementation-defined behavior
 3.key GDB-Debug (use debug-gcc -> start gdb -> list -> breakpoint-> run ->display-> step/continue)
     or rr(Reverse-Debug)
 4.valgrind
+5.sanitizer  gcc -fsanitize=undefined a.c && ./a.out   compiler automatically insert "assert" in the code, check undifined behavior
 
 ->Makfile Experience:
 1.different gcc compiling requirement : 

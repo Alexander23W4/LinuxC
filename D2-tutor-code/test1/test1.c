@@ -14,6 +14,14 @@ int h(){
 int x __attribute__((unused));
 __attribute__((noinline)) int g(){ return 1 / 0; }
 
+__attribute__((noinline)) long double g(int x0, long double x1, int x2){
+   return x0 + x1 + x2;
+}
+
+__test_g(){
+   g(0, 0.0, 1);
+}
+
 // riscv64-unknown-elf-gcc -march=rv32i   -mabi=ilp32   -O2 -c test1.c
 // riscv64-unknown-elf-objdump -d -M no-aliases test1.o
 
