@@ -104,6 +104,12 @@ t0-t6(temparary register) & a0-a7(argument register) & ra(return addr) can chang
 the "can not change" registers actually could be changed by inner function while processing, but when return back to external function, 
 the value must be reversed
 
+Stack Frame
+call func: 1. new stack frame, store "unchange" addr to new stack frame, low "my" paramter to register and store "my" others to new stack frame as well
+           2. if call inner func, store ra into "my" stack frame, put some parameter which in temparary reg into storage reg
+           3. restore stored para & ra, complete processing. add sp for free stack frame, return
+           
+
 ------------------------------------
 ->
 the cost of Instr-grasp miss is much larger than Data-grasp miss
