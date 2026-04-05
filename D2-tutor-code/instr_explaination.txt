@@ -107,7 +107,7 @@ the value must be reversed
 Stack Frame
 call func: 1. new stack frame, store "unchange" addr to new stack frame, low "my" paramter to register and store "my" others to new stack frame as well
            2. if call inner func, store ra into "my" stack frame, put some parameter which in temparary reg into storage reg
-           3. restore stored para & ra, complete processing. add sp for free stack frame, return
+           3. restore stored para & ra, complete processing. add sp for freeing stack frame, return
            
 
 ------------------------------------
