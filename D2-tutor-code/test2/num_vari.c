@@ -3,6 +3,9 @@
 // riscv64-linux-gnu-gcc -march=rv32i   -mabi=ilp32   -O1 -c num_vari.c
 // riscv64-linux-gnu-objdump -d -M no-aliases num_vari.o      (objdump reassembly)
 
+// rv32gcc -O0 -c num_vari.c
+// rv32obj num_vari.o
+
 // how compiler deal with num & variables
 
 // if no main, whether it could be compiled ?   
@@ -20,11 +23,18 @@ __attribute__((noinline)) int f(){
     // noinline, no parameters, 
     // random reg = text_addr(save return addr) -> jar(to target reg) 
     // -> Mf/regf = 0x123 () -> ret
+
+    // when -O0, 
+    // ------ addi sp sp -16, downward growing stack 
+    // sw s0 12 sp   write sp -> M[s0 + 12] , store stack 
+    // operations: variables store in a[x] t[x] stack_mem
+    // lw s0,12(sp)  load content in stack
+    // ------ addi sp sp 16
     return 0x123;
 }
 
 int32_t g(){
-    return -123;  // this is 32-bits num, but less than 20 bits, addi or (lui (20)| addi(12))   // only addi
+    return -123;  // this is 32-bits num, but less than 20 bits, addi or (lui (20)| addi(12))   // only addi, addi zero -123
 }
 
 int8_t h(){
@@ -45,11 +55,12 @@ __attribute__((noinline)) uint32_t k2(){
     return a;
 }
 
-// int main(){
-//     int F = f();   //  Mf/regf, lw xxx a0
-
-//     return 0;
-// }
+int main(){
+    int F = f();   //  Mf/regf, lw xxx a0
+    int32_t G = g();
+    int32_t G2 = g2();
+    return 0;
+}
 
 // __attribute__((noinline)) uint64_t h64(uint64_t num){
 //     return num + 0b101010;

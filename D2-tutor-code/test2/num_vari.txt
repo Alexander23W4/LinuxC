@@ -1,0 +1,65 @@
+
+
+000000fc <main>:
+  fc:	fe010113          	addi	sp,sp,-32     nominate present sp = SP
+
+ 100:	00112e23          	sw	ra,28(sp)       
+ 104:	00812c23          	sw	s0,24(sp)       
+
+ 108:	02010413          	addi	s0,sp,32
+ 10c:	00000097          	auipc	ra,0x0
+ 110:	000080e7          	jalr	ra,0(ra) # 10c <main+0x10>
+ 114:	fea42223          	sw	a0,-28(s0)
+ 118:	00000097          	auipc	ra,0x0
+ 11c:	000080e7          	jalr	ra,0(ra) # 118 <main+0x1c>
+ 120:	fea42423          	sw	a0,-24(s0)
+ 124:	00000097          	auipc	ra,0x0
+ 128:	000080e7          	jalr	ra,0(ra) # 124 <main+0x28>
+ 12c:	fea42623          	sw	a0,-20(s0)
+ 130:	00000793          	addi	a5,zero,0
+ 134:	00078513          	addi	a0,a5,0
+ 138:	01c12083          	lw	ra,28(sp)
+ 13c:	01812403          	lw	s0,24(sp)
+
+ 140:	02010113          	addi	sp,sp,32
+ 144:	00008067          	jalr	zero,0(ra)
+
+
+
+num_vari.o:     file format elf32-littleriscv
+
+
+Disassembly of section .text:
+
+00000000 <f>:
+   0:	12300513          	addi	a0,zero,291
+   4:	00008067          	jalr	zero,0(ra)
+
+00000008 <g>:
+   8:	f8500513          	addi	a0,zero,-123
+   c:	00008067          	jalr	zero,0(ra)
+
+00000010 <h>:
+  10:	02a00513          	addi	a0,zero,42
+  14:	00008067          	jalr	zero,0(ra)
+
+00000018 <g2>:
+  18:	01235537          	lui	a0,0x1235
+  1c:	abc50513          	addi	a0,a0,-1348 # 1234abc <main+0x1234a78>
+  20:	00008067          	jalr	zero,0(ra)
+
+00000024 <k>:
+  24:	00000797          	auipc	a5,0x0
+  28:	00078793          	addi	a5,a5,0 # 24 <k>
+  2c:	0007a503          	lw	a0,0(a5)
+  30:	0047a583          	lw	a1,4(a5)
+  34:	00008067          	jalr	zero,0(ra)
+
+00000038 <k2>:
+  38:	01011537          	lui	a0,0x1011
+  3c:	23f50513          	addi	a0,a0,575 # 101123f <main+0x10111fb>
+  40:	00008067          	jalr	zero,0(ra)
+
+00000044 <main>:
+  44:	00000513          	addi	a0,zero,0
+  48:	00008067          	jalr	zero,0(ra)
