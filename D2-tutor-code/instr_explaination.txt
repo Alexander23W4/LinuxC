@@ -11,7 +11,7 @@ xxd -b -l test1.o
 
 dive deep into how c program compiled, use what kind of instr or instr_combo
 I already know that compiler should do:
-Compilation (3 checking, intermediate language -> optimization) -> assembly(.s) -> .o(binary)
+Compilation (3 checking (if error, report error), intermediate language -> optimization) -> assembly(.s) -> .o(binary)
 Linking
 
 test.c (源代码)

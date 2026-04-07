@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdint.h>
 int f(){
     return 0x123;
 }
@@ -11,6 +12,11 @@ int h(){
     return 0b101010;
 }
 
+int k(){
+   uint64_t a = 0x6789abcd0101123f;  // put into register or memory
+   printf("test: %d\n", a);
+}
+
 int x __attribute__((unused));
 __attribute__((noinline)) int g(){ return 1 / 0; }
 
@@ -20,6 +26,25 @@ __attribute__((noinline)) long double g(int x0, long double x1, int x2){
 
 __test_g(){
    g(0, 0.0, 1);
+}
+// static data area, stack, heap, text
+
+// macro is directly copied to their utlized position, without pre-compilation
+#define MAX_CNT 10   // distribution
+
+#define __TEST_(n, ...) return a##n  // distribution
+
+// distribution
+#define __TEST1_(n, a, ...) {printf(\
+"test: %d", a);}\
+
+__test_c(){
+   for (size_t i = 0; i < MAX_CNT; i++)
+   {
+      test_g();
+      uint64_t a = 10;
+      // ... 
+   }
 }
 
 // riscv64-unknown-elf-gcc -march=rv32i   -mabi=ilp32   -O2 -c test1.c
