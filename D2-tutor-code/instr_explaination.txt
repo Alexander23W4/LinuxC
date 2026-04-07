@@ -40,7 +40,7 @@ range condition judgement usually use transfer range + one end compare (another 
 
 
 ------------------------------------
-Instr level arrangement (Compiler behavior .c -> .s(RV)):
+Instr level arrangement (Compiler behavior .c -> .s(RV)):  num  num-store  operate  call
 
 => 1.Constant:
 -> How to load 32 bits constant: if the number is longer than imm bits, we could use (e.g. lui + addi), load long imm to register

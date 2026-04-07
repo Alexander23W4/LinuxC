@@ -19,6 +19,9 @@
 */
 // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 // -----------------------------------------------------------------------------
+
+int32_t a1 = -10;
+
 __attribute__((noinline)) int f(){   
     // noinline, no parameters, 
     // random reg = text_addr(save return addr) -> jar(to target reg) 
@@ -60,9 +63,10 @@ int main(){
     // int32_t G = g();
     // int32_t G2 = g2();
 
-    printf("%d\n", f());
-    printf("%d\n", g());
-    printf("%d\n", g2());
+    // printf("%d\n", f());
+    // printf("%d\n", g());
+    // printf("%d\n", g2());
+    int32_t p = a1 + 3;
     return 0;
 }
 
