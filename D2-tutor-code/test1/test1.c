@@ -4,12 +4,16 @@ int f(){
     return 0x123;
 }
 
-int g(){
-    return -123;
+int32_t g(){
+    return -123;  // this is 32-bits num, but less than 20 bits, addi or (lui (20)| addi(12))
 }
 
-int h(){
-    return 0b101010;
+int8_t h(){
+    return 0b101010;  // only addi?
+}
+
+int32_t g2(){
+   return 0x1234abc;  // addi a0 abc   lui a0 01234
 }
 
 int k(){
