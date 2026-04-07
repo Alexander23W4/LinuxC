@@ -1,4 +1,6 @@
 
+// Regs are most direct to access
+
 #define src1R() do { *src1 = R(rs1); } while (0)
 #define src2R() do { *src2 = R(rs2); } while (0)
 // different imm bits position in different instr, SEXT() is signed extend

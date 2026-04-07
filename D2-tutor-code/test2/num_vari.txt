@@ -1,28 +1,99 @@
 
+// call function (jump in)
+// framing stack
+// ra s[x] store at the bottom of the stack
+// operation ... nested calling ...
+// internal processing results stored from top to bottom
+// read out ra s[x] from the bottom of the stack
+// free stack
+// jump out
 
-000000fc <main>:
-  fc:	fe010113          	addi	sp,sp,-32     nominate present sp = SP
+000000fc <main>:  -O0   standard call and callback process, none of the nested 
+  fc:	fe010113          	addi	sp,sp,-32    // typical 16 is not enough, 32 is distributed.    nominate present sp = SP   
 
- 100:	00112e23          	sw	ra,28(sp)       
- 104:	00812c23          	sw	s0,24(sp)       
+// store ra & s0 before nested call
+ 100:	00112e23          	sw	ra,28(sp)     // store ra to SP-4 
+ 104:	00812c23          	sw	s0,24(sp)     // store s0 to SP-8
 
- 108:	02010413          	addi	s0,sp,32
+ 108:	02010413          	addi	s0,sp,32     // s0 = SP
+
+// jump to f():
  10c:	00000097          	auipc	ra,0x0
- 110:	000080e7          	jalr	ra,0(ra) # 10c <main+0x10>
- 114:	fea42223          	sw	a0,-28(s0)
+ 110:	000080e7          	jalr	ra,0(ra) # 10c <main+0x10>  
+
+ 114:	fea42223          	sw	a0,-28(s0)    // store f() result to SP - 28
+
+ // jump to g():
  118:	00000097          	auipc	ra,0x0
  11c:	000080e7          	jalr	ra,0(ra) # 118 <main+0x1c>
- 120:	fea42423          	sw	a0,-24(s0)
+
+ 120:	fea42423          	sw	a0,-24(s0)   // store g() result to SP - 24
+
+ // jump to g2():
  124:	00000097          	auipc	ra,0x0
  128:	000080e7          	jalr	ra,0(ra) # 124 <main+0x28>
- 12c:	fea42623          	sw	a0,-20(s0)
+
+ 12c:	fea42623          	sw	a0,-20(s0)   // store g2() result to SP - 20
+
  130:	00000793          	addi	a5,zero,0
  134:	00078513          	addi	a0,a5,0
+
+
  138:	01c12083          	lw	ra,28(sp)
  13c:	01812403          	lw	s0,24(sp)
 
  140:	02010113          	addi	sp,sp,32
  144:	00008067          	jalr	zero,0(ra)
+
+
+
+
+ 00000044 <main>:   -O1
+  44:	ff010113          	addi	sp,sp,-16
+  48:	00112623          	sw	ra,12(sp)
+-------------------
+
+  4c:	00000097          	auipc	ra,0x0    // return addr = pc
+  50:	000080e7          	jalr	ra,0(ra) # 4c <main+0x8>   // jump to f()
+  // ----f() operation -> jump back
+  54:	00050613          	addi	a2,a0,0   // a0 is returned f() value
+
+printf operation
+  58:	00000597          	auipc	a1,0x0
+  5c:	00058593          	addi	a1,a1,0 # 58 <main+0x14>
+  60:	00100513          	addi	a0,zero,1
+  64:	00000097          	auipc	ra,0x0
+  68:	000080e7          	jalr	ra,0(ra) # 64 <main+0x20>
+
+-2-----------------
+  6c:	f8500613          	addi	a2,zero,-123    // function inline
+
+printf operation
+  70:	00000597          	auipc	a1,0x0
+  74:	00058593          	addi	a1,a1,0 # 70 <main+0x2c>
+  78:	00100513          	addi	a0,zero,1
+  7c:	00000097          	auipc	ra,0x0
+  80:	000080e7          	jalr	ra,0(ra) # 7c <main+0x38>
+
+-3-----------------
+  84:	01235637          	lui	a2,0x1235
+  88:	abc60613          	addi	a2,a2,-1348 # 1234abc <main+0x1234a78>
+
+  8c:	00000597          	auipc	a1,0x0
+  90:	00058593          	addi	a1,a1,0 # 8c <main+0x48>
+
+  94:	00100513          	addi	a0,zero,1
+
+  98:	00000097          	auipc	ra,0x0
+  9c:	000080e7          	jalr	ra,0(ra) # 98 <main+0x54>
+
+  a0:	00000513          	addi	a0,zero,0
+
+--------------------
+  a4:	00c12083          	lw	ra,12(sp)
+  a8:	01010113          	addi	sp,sp,16
+  ac:	00008067          	jalr	zero,0(ra)
+
 
 
 

@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdint.h>
-// riscv64-linux-gnu-gcc -march=rv32i   -mabi=ilp32   -O1 -c num_vari.c
+// riscv64-linux-gnu-gcc -march=rv32i   -mabi=ilp32   -O0 -c num_vari.c
 // riscv64-linux-gnu-objdump -d -M no-aliases num_vari.o      (objdump reassembly)
 
 // rv32gcc -O0 -c num_vari.c
@@ -33,7 +33,7 @@ __attribute__((noinline)) int f(){
     return 0x123;
 }
 
-int32_t g(){
+static inline int32_t g(){
     return -123;  // this is 32-bits num, but less than 20 bits, addi or (lui (20)| addi(12))   // only addi, addi zero -123
 }
 
@@ -56,9 +56,13 @@ __attribute__((noinline)) uint32_t k2(){
 }
 
 int main(){
-    int F = f();   //  Mf/regf, lw xxx a0
-    int32_t G = g();
-    int32_t G2 = g2();
+    // int F = f();   //  Mf/regf, lw xxx a0
+    // int32_t G = g();
+    // int32_t G2 = g2();
+
+    printf("%d\n", f());
+    printf("%d\n", g());
+    printf("%d\n", g2());
     return 0;
 }
 
