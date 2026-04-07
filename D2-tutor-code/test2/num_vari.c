@@ -9,6 +9,13 @@
 
 // noinline && default
 
+// -----------------------------------------------------------------------------
+// xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+/*
+    the compiler flag is by default use -O1 optimization option
+*/
+// xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+// -----------------------------------------------------------------------------
 __attribute__((noinline)) int f(){   
     // noinline, no parameters, 
     // random reg = text_addr(save return addr) -> jar(to target reg) 
