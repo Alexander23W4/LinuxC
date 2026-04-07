@@ -6,7 +6,7 @@
 // function pointer is naturally utilize in other function 
 
 /** Our old friend die from ex17. */
-void die(const char *message)
+void die(const char *message)    
 {
     if(errno) {
         perror(message);

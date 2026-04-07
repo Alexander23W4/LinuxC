@@ -95,6 +95,8 @@ function itself is stored in the text area of ram
 for variable_changable functions, the compiler arrange the parameters normally
 
 => 9. stream use transfer
+// a t ra, caller store to their stack before calling
+// s, all func use, move to stack -> use -> write back 
 just use jar  / auipc + jalr (jump longer)
 *** how to deal with insect calling functions parameter distribution problem, how does the inner called function use register resources without 
  disrupt utter functions paramter? 
