@@ -63,6 +63,7 @@ common used command in (gdb) mode: f 1  f 2.... list(list the code context of th
 GDB commands: 
 run
 break (break main/ break file.c:100)
+print (p x)
 display
 info breakpoints
 delete  (delete breakpoints)
