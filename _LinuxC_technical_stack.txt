@@ -52,7 +52,7 @@ Core 文件结构：
 ├─────────────────┤
 │ 栈（stack）     │ ← 局部变量 + 调用栈
 ├─────────────────┤
-│ 共享库         │ ← printf 等库函数
+│ 共享库          │ ← printf 等库函数
 └─────────────────┘
 
 ->read core file by GDB, find the bug:
@@ -61,14 +61,20 @@ gdb ./test.out core ./core.....
 common used command in (gdb) mode: f 1  f 2.... list(list the code context of the crash line) p ...(print)
 
 GDB commands: 
-run
-break (break main/ break file.c:100)
+
+break (b) (break main/ break file.c:100)
+info breakpoints
+delete (d) (delete breakpoints)
+
 print (p x)
 display
-info breakpoints
-delete  (delete breakpoints)
-step next finish
-continue
+
+run  (r)   从头开始执行程序
+step  (s)   下一条执行语句，最小颗粒度
+next  (n)   下一行，在当前函数内部的下一行，碰到子函数不会跳进去
+finish  （fin） 退出当前函数
+continue （c）下一個断点
+
 list
 bt  (show stack)
 layout src  (TUI)
