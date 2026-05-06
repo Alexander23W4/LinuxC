@@ -1,6 +1,4 @@
 LinuxC  Technical Stack
-->The file of program normally includes:
-Makefile  .c  binary code
 
 ->When coding:
 use assert()
