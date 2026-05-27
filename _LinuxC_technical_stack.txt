@@ -79,6 +79,29 @@ continue （c）下一個断点
 list
 bt  (show stack)
 layout src  (TUI)
+frame x (e.g. frame 1, 看之前一步是那个函数，Application: 现在处在某一个函数，不知道这个函数是谁调用的。similar to ftrace)
+
+*** Read BT infomation:
+(gdb) bt
+#0  0x0000000000100008 in ?? ()
+#1  0x00005555555cb490 in irq_handle ()
+#2  0x000000000000450b in ?? ()
+#3  0x0000000000000000 in ?? ()
+
+(gdb) p/x next      # 十六进制
+(gdb) p/d next      # 十进制
+(gdb) p/t next      # 二进制 (非常适合看寄存器掩码或标志位)
+
+
+bt的每一次call / ret的跳转的目标地址， 比如#1为irq_handle()入口地址，100008是irq_handle()内部执行时触发的跳转目标地址
+
+
+
+
+
+
+
+
 
 
 
