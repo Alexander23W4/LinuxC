@@ -6,8 +6,8 @@ int c = 10;
 
 int main(int argc, char** argv){
 
-    int(*fp)(int) = f;
-    f(2);
-
+//    int(*fp)(int) = f;
+//    f(2);
+    b += 1;
     return 0;
 }
